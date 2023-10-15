@@ -4,6 +4,7 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const imageDownloader = require("image-downloader");
 require("dotenv").config();
 const User = require("./models/User");
 const cookieParser = require("cookie-parser");
@@ -94,6 +95,16 @@ app.get("/profile", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);
+});
+
+app.post("/upload-link", async (req, res) => {
+  const { link } = req.body;
+  const name = __dirname + "/uploads/" + Date.now() + ".jpg";
+  await imageDownloader.image({
+    url: link,
+    dest: name,
+  });
+  res.json({ name });
 });
 
 //Qwerty!2345

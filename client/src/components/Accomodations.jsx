@@ -1,6 +1,17 @@
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import { placeActions } from "../store/index";
+import axios from "axios";
 const Accomodations = () => {
   const { action } = useParams();
+  const place = useSelector(state => state.place);
+  const dispatch = useDispatch();
+
+  const addPhotoByLink = async e => {
+    e.preventDefault();
+    await axios.post("/upload-link", { link: place.photoLink });
+  };
+
   return (
     <div>
       {action !== "new" && (
@@ -17,13 +28,37 @@ const Accomodations = () => {
         <div>
           <form>
             <h2 className='text-2xl mt-3'>Title</h2>
-            <input type='text' placeholder='title , for ex-> My Apartment' />
+            <input
+              type='text'
+              placeholder='title , for ex-> My Apartment'
+              value={place.title}
+              onChange={e => {
+                dispatch(placeActions.setTitle(e.target.value));
+              }}
+            />
             <h2 className='text-2xl mt-3'>Address</h2>
-            <input type='text' placeholder='address' />
+            <input
+              type='text'
+              placeholder='address'
+              value={place.address}
+              onChange={e => {
+                dispatch(placeActions.setAddress(e.target.value));
+              }}
+            />
             <h2 className='text-2xl mt-3'>Photos</h2>
             <div className='flex gap-1.5'>
-              <input type='text' placeholder='Link for photo' />
-              <button className='bg-gray-200 px-4 m-1.5 rounded-2xl'>
+              <input
+                type='text'
+                placeholder='Link for photo'
+                value={place.photoLink}
+                onChange={e => {
+                  dispatch(placeActions.setPhotoLink(e.target.value));
+                }}
+              />
+              <button
+                className='bg-gray-200 px-4 m-1.5 rounded-2xl'
+                onClick={addPhotoByLink}
+              >
                 Add&nbsp;Photo
               </button>
             </div>
@@ -48,11 +83,23 @@ const Accomodations = () => {
             </div>
             <div>
               <h2 className='text-2xl mt-3'>Description</h2>
-              <textarea />
+              <textarea
+                value={place.description}
+                onChange={e => {
+                  dispatch(placeActions.setDescription(e.target.value));
+                }}
+              />
               <h2 className='text-2xl mt-3'>Perks</h2>
               <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 mt-2'>
                 <label className='border p-4 flex rounded-2xl gap-2 items-center cursor-pointer border-transparent'>
-                  <input type='checkbox' />
+                  <input
+                    type='checkbox'
+                    onChange={e => {
+                      e.checked
+                        ? dispatch(placeActions.setPerks("Wifi"))
+                        : dispatch(placeActions.removePerks("Wifi"));
+                    }}
+                  />
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -71,7 +118,14 @@ const Accomodations = () => {
                   <span>Wifi</span>
                 </label>
                 <label className='border p-4 flex rounded-2xl gap-2 items-center cursor-pointer border-transparent'>
-                  <input type='checkbox' />
+                  <input
+                    type='checkbox'
+                    onChange={e => {
+                      e.checked
+                        ? dispatch(placeActions.setPerks("Parking"))
+                        : dispatch(placeActions.removePerks("Parking"));
+                    }}
+                  />
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -90,7 +144,14 @@ const Accomodations = () => {
                   <span>Free parking on premises</span>
                 </label>
                 <label className='border p-4 flex rounded-2xl gap-2 items-center cursor-pointer border-transparent'>
-                  <input type='checkbox' />
+                  <input
+                    type='checkbox'
+                    onChange={e => {
+                      e.checked
+                        ? dispatch(placeActions.setPerks("Entrance"))
+                        : dispatch(placeActions.removePerks("Entrance"));
+                    }}
+                  />
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -109,7 +170,14 @@ const Accomodations = () => {
                   <span>Private entrance</span>
                 </label>
                 <label className='border p-4 flex rounded-2xl gap-2 items-center cursor-pointer border-transparent'>
-                  <input type='checkbox' />
+                  <input
+                    type='checkbox'
+                    onChange={e => {
+                      e.checked
+                        ? dispatch(placeActions.setPerks("Kitchen"))
+                        : dispatch(placeActions.removePerks("Kitchen"));
+                    }}
+                  />
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -133,7 +201,14 @@ const Accomodations = () => {
                   <span>Kitchen</span>
                 </label>
                 <label className='border p-4 flex rounded-2xl gap-2 items-center cursor-pointer border-transparent'>
-                  <input type='checkbox' />
+                  <input
+                    type='checkbox'
+                    onChange={e => {
+                      e.checked
+                        ? dispatch(placeActions.setPerks("TV"))
+                        : dispatch(placeActions.removePerks("TV"));
+                    }}
+                  />
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -152,7 +227,14 @@ const Accomodations = () => {
                   <span>TV</span>
                 </label>
                 <label className='border p-4 flex rounded-2xl gap-2 items-center cursor-pointer border-transparent'>
-                  <input type='checkbox' />
+                  <input
+                    type='checkbox'
+                    onChange={e => {
+                      e.checked
+                        ? dispatch(placeActions.setPerks("Pet"))
+                        : dispatch(placeActions.removePerks("Pet"));
+                    }}
+                  />
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -171,7 +253,14 @@ const Accomodations = () => {
                   <span>Pets Allowed</span>
                 </label>
                 <label className='border p-4 flex rounded-2xl gap-2 items-center cursor-pointer border-transparent'>
-                  <input type='checkbox' />
+                  <input
+                    type='checkbox'
+                    onChange={e => {
+                      e.checked
+                        ? dispatch(placeActions.setPerks("Backup"))
+                        : dispatch(placeActions.removePerks("Backup"));
+                    }}
+                  />
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -192,20 +281,46 @@ const Accomodations = () => {
               </div>
             </div>
             <h2 className='text-2xl mt-3'>Extra info</h2>
-            <textarea />
+            <textarea
+              value={place.extraInfo}
+              onChange={e => {
+                dispatch(placeActions.setExtraInfo(e.target.value));
+              }}
+            />
             <h2 className='text-2xl mt-3'>Check in and out time</h2>
             <div className='grid gap-2 sm:grid-cols-3 '>
               <div>
                 <h3 className='mt-2 -mb-1'>Check in time</h3>
-                <input type='text' placeholder='11:00' />
+                <input
+                  type='text'
+                  placeholder='11:00'
+                  value={place.checkInTime}
+                  onChange={e => {
+                    dispatch(placeActions.setCheckInTime(e.target.value));
+                  }}
+                />
               </div>
               <div>
                 <h3 className='mt-2 -mb-1'>Check out time</h3>
-                <input type='text' placeholder='22:00' />
+                <input
+                  type='text'
+                  placeholder='22:00'
+                  value={place.checkOutTime}
+                  onChange={e => {
+                    dispatch(placeActions.setCheckOutTime(e.target.value));
+                  }}
+                />
               </div>
               <div>
                 <h3 className='mt-2 -mb-1'>Max no. of guests</h3>
-                <input type='text' placeholder='3' />
+                <input
+                  type='number'
+                  placeholder='3'
+                  value={place.maxGuests}
+                  onChange={e => {
+                    dispatch(placeActions.setMaxGuests(e.target.value));
+                  }}
+                />
               </div>
             </div>
             <button className='bg-primary w-full rounded-full px-2 py-2 text-white mt-4'>
