@@ -26,6 +26,8 @@ const LoginPage = () => {
     try {
       const { data } = await axios.post("/login", { email, password });
       dispatch(clientActions.setClient(data));
+      dispatch(userActions.emailHandler(""));
+      dispatch(userActions.passwordHandler(""));
       navigate("/");
     } catch (e) {
       toast.error("Unexcpected Error. Please try agin later.", {
