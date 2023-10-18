@@ -39,8 +39,8 @@ const placeSlice = createSlice({
     description: "",
     perks: [],
     extraInfo: "",
-    checkInTime: "",
-    checkOutTime: "",
+    checkIn: "",
+    checkOut: "",
     maxGuests: 1,
   },
   reducers: {
@@ -73,11 +73,11 @@ const placeSlice = createSlice({
     setExtraInfo(state, action) {
       state.extraInfo = action.payload;
     },
-    setCheckInTime(state, action) {
-      state.checkInTime = action.payload;
+    setCheckIn(state, action) {
+      state.checkIn = action.payload;
     },
-    setCheckOutTime(state, action) {
-      state.checkOutTime = action.payload;
+    setCheckOut(state, action) {
+      state.checkOut = action.payload;
     },
     setMaxGuests(state, action) {
       state.maxGuests = action.payload;

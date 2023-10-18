@@ -9,8 +9,8 @@ const multer = require("multer");
 const imageDownloader = require("image-downloader");
 require("dotenv").config();
 const User = require("./models/User");
+const Place = require("./models/Place");
 const cookieParser = require("cookie-parser");
-const { log } = require("console");
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret =
   "nG8D#%-FpF+AK7b5b|tgy}B:UMzL/%&Y5>)?1c=@O 4,R!L!(?e8Lfvv`MNO#4Fs";
@@ -123,6 +123,37 @@ app.post("/upload", photoMiddleware.array("photos", 10), (req, res) => {
     uploadedFiles.push(newPath.replace("uploads\\", ""));
   }
   res.json(uploadedFiles);
+});
+
+app.post("/places", (req, res) => {
+  const { token } = req.cookies;
+  jwt.verify(token, jwtSecret, {}, async (err, user) => {
+    if (err) throw err;
+    const {
+      title,
+      address,
+      addedPhotos,
+      description,
+      perks,
+      extraInfo,
+      checkIn,
+      checkOut,
+      maxGuests,
+    } = req.body;
+    const place = Place.create({
+      owner: user.id,
+      title,
+      address,
+      addedPhotos,
+      description,
+      perks,
+      extraInfo,
+      checkIn,
+      checkOut,
+      maxGuests,
+    });
+    res.json(place);
+  });
 });
 
 //Qwerty!2345

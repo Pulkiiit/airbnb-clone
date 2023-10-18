@@ -31,11 +31,11 @@ const placeSchema = new mongoose.Schema({
     required: true,
   },
   checkIn: {
-    type: Number,
+    type: String,
     required: true,
   },
   checkOut: {
-    type: Number,
+    type: String,
     required: true,
   },
   maxGuests: {

@@ -1,11 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { placeActions } from "../store/index";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Accomodations = () => {
   const { action } = useParams();
   const place = useSelector(state => state.place);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const addPhotoByLink = async e => {
     e.preventDefault();
@@ -32,6 +35,25 @@ const Accomodations = () => {
       });
   };
 
+  const submitHandler = async e => {
+    e.preventDefault();
+    try {
+      await axios.post("/places", place);
+      navigate("/account/accomodations");
+    } catch (e) {
+      toast.error("Unexcpected Error. Please try agin later.", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
   return (
     <div>
       {action !== "new" && (
@@ -46,7 +68,7 @@ const Accomodations = () => {
       )}
       {action === "new" && (
         <div>
-          <form>
+          <form onSubmit={submitHandler}>
             <h2 className='text-2xl mt-3'>Title</h2>
             <input
               type='text'
@@ -357,7 +379,7 @@ const Accomodations = () => {
                   placeholder='11:00'
                   value={place.checkInTime}
                   onChange={e => {
-                    dispatch(placeActions.setCheckInTime(e.target.value));
+                    dispatch(placeActions.setCheckIn(e.target.value));
                   }}
                 />
               </div>
@@ -368,7 +390,7 @@ const Accomodations = () => {
                   placeholder='22:00'
                   value={place.checkOutTime}
                   onChange={e => {
-                    dispatch(placeActions.setCheckOutTime(e.target.value));
+                    dispatch(placeActions.setCheckOut(e.target.value));
                   }}
                 />
               </div>
@@ -388,6 +410,7 @@ const Accomodations = () => {
               Save
             </button>
           </form>
+          <ToastContainer />
         </div>
       )}
     </div>

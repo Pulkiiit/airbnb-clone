@@ -60,7 +60,6 @@ const RegisterPage = () => {
       });
       navigate("/login");
     } catch (e) {
-      console.log(e);
       toast.error("Unexcpected Error. Please try agin later.", {
         position: "top-right",
         autoClose: 2000,
