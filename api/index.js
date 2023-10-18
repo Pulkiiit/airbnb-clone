@@ -4,6 +4,8 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const multer = require("multer");
 const imageDownloader = require("image-downloader");
 require("dotenv").config();
 const User = require("./models/User");
@@ -22,7 +24,9 @@ app.use(
   })
 );
 app.use(cookieParser());
+app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(express.json());
+const photoMiddleware = multer({ dest: "uploads" });
 
 //database
 mongoose
@@ -99,12 +103,25 @@ app.post("/logout", (req, res) => {
 
 app.post("/upload-link", async (req, res) => {
   const { link } = req.body;
-  const name = __dirname + "/uploads/" + Date.now() + ".jpg";
+  const name = Date.now() + ".jpg";
   await imageDownloader.image({
     url: link,
-    dest: name,
+    dest: __dirname + "/uploads/" + name,
   });
   res.json({ name });
+});
+
+app.post("/upload", photoMiddleware.array("photos", 10), (req, res) => {
+  const uploadedFiles = [];
+  for (let i = 0; i < req.files.length; i++) {
+    const { path, originalname } = req.files[i];
+    const parts = originalname.split(".");
+    const ext = parts[parts.length - 1];
+    const newPath = path + "." + ext;
+    fs.renameSunc(path, newPath);
+    uploadedFiles.push(newPath.replace("uploads/", ""));
+  }
+  res.json(uploadedFiles);
 });
 
 //Qwerty!2345

@@ -9,7 +9,27 @@ const Accomodations = () => {
 
   const addPhotoByLink = async e => {
     e.preventDefault();
-    await axios.post("/upload-link", { link: place.photoLink });
+    const { data: fileName } = await axios.post("/upload-link", {
+      link: place.photoLink,
+    });
+    dispatch(placeActions.setAddedPhotos(fileName));
+    dispatch(placeActions.setPhotoLink(""));
+  };
+
+  const uploadPhoto = e => {
+    const files = e.target.files;
+    const data = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      data.append("photos", files[i]);
+    }
+    axios
+      .post("/uploads", data, {
+        headers: { "Content-type": "multipart/from-data" },
+      })
+      .then(res => {
+        const { data: filename } = res;
+        dispatch(placeActions.setAddedPhotos(filename));
+      });
   };
 
   return (
@@ -62,8 +82,25 @@ const Accomodations = () => {
                 Add&nbsp;Photo
               </button>
             </div>
-            <div className='grid grid-cols-3 lg:grid-cols-6 md:grid-cols-4 mt-2 '>
-              <button className='flex justify-center gap-2 border rounded-2xl p-8 bg-transparent border-gray-300 text-2xl'>
+
+            <div className='grid gap-2 grid-cols-3 lg:grid-cols-6 md:grid-cols-4 mt-2 '>
+              {place.addedPhotos.length > 0 &&
+                place.addedPhotos.map(link => (
+                  <div key={Math.random()}>
+                    <img
+                      className='rounded-2xl '
+                      src={"http://localhost:4000/uploads/" + link.name}
+                    />
+                  </div>
+                ))}
+              <label className='flex items-center justify-center gap-2 border rounded-2xl p-6 bg-transparent border-gray-300 text-2xl cursor-pointer'>
+                <input
+                  type='file'
+                  className='hidden'
+                  accept='image/png,image/jpg,image/jpeg'
+                  onChange={uploadPhoto}
+                  multiple
+                />
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
@@ -79,7 +116,7 @@ const Accomodations = () => {
                   />
                 </svg>
                 Upload
-              </button>
+              </label>
             </div>
             <div>
               <h2 className='text-2xl mt-3'>Description</h2>
