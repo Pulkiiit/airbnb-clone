@@ -51,7 +51,7 @@ const placeSlice = createSlice({
       state.address = action.payload;
     },
     setAddedPhotos(state, action) {
-      state.addedPhotos = [...state.addedPhotos, ...action.payload];
+      state.addedPhotos = state.addedPhotos.concat(action.payload);
     },
     removeAddedPhotos(state, action) {
       state.addedPhotos = state.addedPhotos.filter(
@@ -65,7 +65,7 @@ const placeSlice = createSlice({
       state.description = action.payload;
     },
     setPerks(state, action) {
-      state.perks = [...state.perks, action.payload];
+      state.perks = state.perks.concat(action.payload);
     },
     removePerks(state, action) {
       state.perks = state.perks.filter(perk => perk !== action.payload);

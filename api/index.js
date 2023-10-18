@@ -10,6 +10,7 @@ const imageDownloader = require("image-downloader");
 require("dotenv").config();
 const User = require("./models/User");
 const cookieParser = require("cookie-parser");
+const { log } = require("console");
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret =
   "nG8D#%-FpF+AK7b5b|tgy}B:UMzL/%&Y5>)?1c=@O 4,R!L!(?e8Lfvv`MNO#4Fs";
@@ -118,8 +119,8 @@ app.post("/upload", photoMiddleware.array("photos", 10), (req, res) => {
     const parts = originalname.split(".");
     const ext = parts[parts.length - 1];
     const newPath = path + "." + ext;
-    fs.renameSunc(path, newPath);
-    uploadedFiles.push(newPath.replace("uploads/", ""));
+    fs.renameSync(path, newPath);
+    uploadedFiles.push(newPath.replace("uploads\\", ""));
   }
   res.json(uploadedFiles);
 });

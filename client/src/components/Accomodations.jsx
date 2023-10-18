@@ -23,8 +23,8 @@ const Accomodations = () => {
       data.append("photos", files[i]);
     }
     axios
-      .post("/uploads", data, {
-        headers: { "Content-type": "multipart/from-data" },
+      .post("/upload", data, {
+        headers: { "Content-type": "multipart/form-data" },
       })
       .then(res => {
         const { data: filename } = res;
@@ -66,6 +66,7 @@ const Accomodations = () => {
               }}
             />
             <h2 className='text-2xl mt-3'>Photos</h2>
+
             <div className='flex gap-1.5'>
               <input
                 type='text'
@@ -83,14 +84,36 @@ const Accomodations = () => {
               </button>
             </div>
 
-            <div className='grid gap-2 grid-cols-3 lg:grid-cols-6 md:grid-cols-4 mt-2 '>
+            <div className='grid gap-2 grid-cols-3 lg:grid-cols-6 md:grid-cols-4 mt-2'>
               {place.addedPhotos.length > 0 &&
                 place.addedPhotos.map(link => (
-                  <div key={Math.random()}>
+                  <div key={link} className='flex h-32'>
                     <img
-                      className='rounded-2xl '
-                      src={"http://localhost:4000/uploads/" + link.name}
+                      className='rounded-2xl h-full w-full object-cover '
+                      src={"http://localhost:4000/uploads/" + link}
                     />
+                    <button
+                      onClick={e => {
+                        e.preventDefault();
+                        dispatch(placeActions.removeAddedPhotos(link));
+                      }}
+                      className='absolute bg-transparent m-1'
+                    >
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        strokeWidth={1.5}
+                        stroke='currentColor'
+                        className='w-6 h-6'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M6 18L18 6M6 6l12 12'
+                        />
+                      </svg>
+                    </button>
                   </div>
                 ))}
               <label className='flex items-center justify-center gap-2 border rounded-2xl p-6 bg-transparent border-gray-300 text-2xl cursor-pointer'>
@@ -118,6 +141,7 @@ const Accomodations = () => {
                 Upload
               </label>
             </div>
+
             <div>
               <h2 className='text-2xl mt-3'>Description</h2>
               <textarea
@@ -132,7 +156,7 @@ const Accomodations = () => {
                   <input
                     type='checkbox'
                     onChange={e => {
-                      e.checked
+                      e.target.checked
                         ? dispatch(placeActions.setPerks("Wifi"))
                         : dispatch(placeActions.removePerks("Wifi"));
                     }}
@@ -158,7 +182,7 @@ const Accomodations = () => {
                   <input
                     type='checkbox'
                     onChange={e => {
-                      e.checked
+                      e.target.checked
                         ? dispatch(placeActions.setPerks("Parking"))
                         : dispatch(placeActions.removePerks("Parking"));
                     }}
@@ -184,7 +208,7 @@ const Accomodations = () => {
                   <input
                     type='checkbox'
                     onChange={e => {
-                      e.checked
+                      e.target.checked
                         ? dispatch(placeActions.setPerks("Entrance"))
                         : dispatch(placeActions.removePerks("Entrance"));
                     }}
@@ -210,7 +234,7 @@ const Accomodations = () => {
                   <input
                     type='checkbox'
                     onChange={e => {
-                      e.checked
+                      e.target.checked
                         ? dispatch(placeActions.setPerks("Kitchen"))
                         : dispatch(placeActions.removePerks("Kitchen"));
                     }}
@@ -241,7 +265,7 @@ const Accomodations = () => {
                   <input
                     type='checkbox'
                     onChange={e => {
-                      e.checked
+                      e.target.checked
                         ? dispatch(placeActions.setPerks("TV"))
                         : dispatch(placeActions.removePerks("TV"));
                     }}
@@ -267,7 +291,7 @@ const Accomodations = () => {
                   <input
                     type='checkbox'
                     onChange={e => {
-                      e.checked
+                      e.target.checked
                         ? dispatch(placeActions.setPerks("Pet"))
                         : dispatch(placeActions.removePerks("Pet"));
                     }}
@@ -293,7 +317,7 @@ const Accomodations = () => {
                   <input
                     type='checkbox'
                     onChange={e => {
-                      e.checked
+                      e.target.checked
                         ? dispatch(placeActions.setPerks("Backup"))
                         : dispatch(placeActions.removePerks("Backup"));
                     }}
