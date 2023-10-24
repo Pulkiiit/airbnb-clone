@@ -26,7 +26,7 @@ const placeSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
-  extrainfo: {
+  extraInfo: {
     type: [String],
     required: true,
   },

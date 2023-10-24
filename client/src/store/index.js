@@ -55,7 +55,7 @@ const placeSlice = createSlice({
     },
     removeAddedPhotos(state, action) {
       state.addedPhotos = state.addedPhotos.filter(
-        photo => photo !== action.payload
+        photo => photo.name !== action.payload
       );
     },
     setPhotoLink(state, action) {
@@ -85,15 +85,31 @@ const placeSlice = createSlice({
   },
 });
 
+const placesSlice = createSlice({
+  name: "places",
+  initialState: { data: [] },
+  reducers: {
+    setPlaces(state, action) {
+      console.log(state.data);
+      state.data = state.data.concat(action.payload);
+    },
+    removePlaces(state) {
+      state.data = [];
+    },
+  },
+});
+
 const store = configureStore({
   reducer: {
     user: userSlice.reducer,
     client: clientSlice.reducer,
     place: placeSlice.reducer,
+    places: placesSlice.reducer,
   },
 });
 
 export const clientActions = clientSlice.actions;
 export const userActions = userSlice.actions;
 export const placeActions = placeSlice.actions;
+export const placesActions = placesSlice.actions;
 export default store;

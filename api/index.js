@@ -140,11 +140,12 @@ app.post("/places", (req, res) => {
       checkOut,
       maxGuests,
     } = req.body;
+    const newAddedPhotos = addedPhotos.map(photo => photo.name);
     const place = Place.create({
       owner: user.id,
       title,
       address,
-      addedPhotos,
+      photos: newAddedPhotos,
       description,
       perks,
       extraInfo,
@@ -156,4 +157,49 @@ app.post("/places", (req, res) => {
   });
 });
 
-//Qwerty!2345
+app.get("/places", async (req, res) => {
+  jwt.verify(req.cookies.token, jwtSecret, {}, async (err, user) => {
+    const { id } = user;
+    res.json(await Place.find({ owner: id }));
+  });
+});
+
+app.get("/places/:id", async (req, res) => {
+  const { id } = req.params;
+  res.json(await Place.findById(id));
+});
+
+app.put("/place/:id", async (req, res) => {
+  const { id } = req.params;
+  const { token } = req.cookies;
+  jwt.verify(token, jwtSecret, {}, async (err, user) => {
+    if (err) throw err;
+    const place = await Place.findById(id);
+    if (user.id === place.owner.toString()) {
+      const {
+        title,
+        address,
+        addedPhotos,
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+      } = req.body;
+      place.set({
+        title,
+        address,
+        photos: [...addedPhotos],
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+      });
+      await place.save();
+      res.json("ok");
+    }
+  });
+});

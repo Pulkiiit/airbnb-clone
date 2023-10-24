@@ -1,33 +1,23 @@
-import { useSelector } from "react-redux";
-import { useNavigation, useNavigate, Link, useParams } from "react-router-dom";
-import Profile from "../components/Profile";
-import Bookings from "../components/Bookings";
-import Accomodations from "../components/Accomodations";
-const AccountPage = () => {
-  const client = useSelector(state => state.client.value);
-  const ready = useSelector(state => state.client.ready);
-  const navigate = useNavigate();
-  const navigation = useNavigation();
-  const { subpage } = useParams();
-  if (!ready) {
-    return "Loading...";
-  }
-  if (ready && !client && navigation.state === "submitting") {
-    return navigate("/login");
-  }
+import { Link, useLocation } from "react-router-dom";
 
-  const activeLink = (link = undefined) => {
+const AccountNav = () => {
+  // const { subpage } = useParams();
+  const { pathname } = useLocation();
+  let subpage = pathname.split("/")[2];
+  if (subpage === undefined) {
+    subpage = "profile";
+  }
+  const activeLink = (link = subpage) => {
     if (link === subpage) {
       return "gap-1 inline-flex px-3 py-2 bg-primary text-white rounded-full ";
     } else {
       return "gap-1 inline-flex px-3 py-2 bg-gray-300 rounded-full";
     }
   };
-
   return (
     <div>
       <nav className='w-full flex justify-center mt-8 gap-4 mb-6'>
-        <Link className={activeLink()} to='/account'>
+        <Link className={activeLink("profile")} to='/account'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
@@ -82,17 +72,8 @@ const AccountPage = () => {
           My Accomodations
         </Link>
       </nav>
-      {subpage === undefined ? (
-        <Profile />
-      ) : subpage === "bookings" ? (
-        <Bookings />
-      ) : subpage === "accomodations" ? (
-        <Accomodations />
-      ) : (
-        ""
-      )}
     </div>
   );
 };
 
-export default AccountPage;
+export default AccountNav;
