@@ -58,6 +58,7 @@ router.post("/success", async (req, res) => {
 
     //create booking model
     const createdBooking = await Booking.create({ place, client, guests });
+    res.json({
       msg: "success",
       orderId: razorpayOrderId,
       paymentId: razorpayPaymentId,
