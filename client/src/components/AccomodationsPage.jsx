@@ -9,8 +9,8 @@ const AccomodationsPage = () => {
   const places = useSelector(state => state.places.data);
   useEffect(() => {
     const getPlaces = async () => {
-      const data = await axios.get("/places");
-      dispatch(placesActions.setPlaces(data.data));
+      const { data } = await axios.get("/user-places");
+      dispatch(placesActions.setPlaces(data));
     };
     getPlaces();
     return () => {
@@ -29,7 +29,7 @@ const AccomodationsPage = () => {
           Add a new place
         </Link>
       </div>
-      <div className='mt-4'>
+      <div className='mt-4 flex'>
         {places.length > 0 &&
           places.map(place => (
             <Link
@@ -37,7 +37,7 @@ const AccomodationsPage = () => {
               className='flex gap-4 mt-4 bg-gray-200 p-4 rounded-2xl cursor-pointer'
               key={place._id}
             >
-              <div className='flex w-32 h-32 bg-gray-300'>
+              <div className='flex w-32 h-32 bg-gray-300  grow shrink-0'>
                 {place.photos.length > 0 && (
                   <img
                     className='object-cover'
@@ -45,7 +45,7 @@ const AccomodationsPage = () => {
                   />
                 )}
               </div>
-              <div className=''>
+              <div className='shrink grow-0'>
                 <h2 className='text-xl '>{place.title}</h2>
                 <p className='text-sm mt-2'>{place.description}</p>
               </div>

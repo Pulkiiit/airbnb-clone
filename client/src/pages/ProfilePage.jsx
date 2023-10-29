@@ -5,14 +5,10 @@ import { clientActions } from "../store";
 import axios from "axios";
 const ProfilePage = () => {
   const client = useSelector(state => state.client.value);
-  const ready = useSelector(state => state.client.ready);
   const navigate = useNavigate();
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  if (!ready) {
-    return "Loading...";
-  }
-  if (ready && !client && navigation.state === "submitting") {
+  if (!client && navigation.state === "submitting") {
     return navigate("/login");
   }
   const logoutHandler = async () => {

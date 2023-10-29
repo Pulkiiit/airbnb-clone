@@ -16,6 +16,8 @@ import { clientActions } from "./store";
 import ProfilePage from "./pages/ProfilePage";
 import AccomodationsPage from "./components/AccomodationsPage";
 import AccomodationsForm from "./components/AccomodationsForm";
+import Bookings from "./components/Bookings";
+import PlacePage from "./pages/PlacePage";
 axios.defaults.baseURL = "http://localhost:4000";
 axios.defaults.withCredentials = true;
 
@@ -35,6 +37,8 @@ const router = createBrowserRouter(
         path='/account/accomodations/:id'
         element={<AccomodationsForm />}
       />
+      <Route path='/account/bookings' element={<Bookings />} />
+      <Route path='/place/:id' element={<PlacePage />} />
     </Route>
   )
 );
@@ -47,7 +51,6 @@ function App() {
       if (!client) {
         const { data } = await axios.get("/profile");
         dispatch(clientActions.setClient(data));
-        dispatch(clientActions.setReady(true));
       }
     };
     getClient();

@@ -42,6 +42,13 @@ const placeSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  price: {
+    type: Number,
+    required: true,
+  },
+  booked: {
+    type: Boolean,
+  },
 });
 
 const PlaceModel = mongoose.model("Place", placeSchema);

@@ -18,13 +18,10 @@ const userSlice = createSlice({
 
 const clientSlice = createSlice({
   name: "client",
-  initialState: { value: null, ready: false },
+  initialState: { value: null },
   reducers: {
     setClient(state, action) {
       state.value = action.payload;
-    },
-    setReady(state, action) {
-      state.ready = action.payload;
     },
   },
 });
@@ -42,6 +39,7 @@ const placeSlice = createSlice({
     checkIn: "",
     checkOut: "",
     maxGuests: 1,
+    price: 3000,
   },
   reducers: {
     setTitle(state, action) {
@@ -82,6 +80,9 @@ const placeSlice = createSlice({
     setMaxGuests(state, action) {
       state.maxGuests = action.payload;
     },
+    setPrice(state, action) {
+      state.price = action.payload;
+    },
   },
 });
 
@@ -90,8 +91,7 @@ const placesSlice = createSlice({
   initialState: { data: [] },
   reducers: {
     setPlaces(state, action) {
-      console.log(state.data);
-      state.data = state.data.concat(action.payload);
+      state.data = action.payload;
     },
     removePlaces(state) {
       state.data = [];

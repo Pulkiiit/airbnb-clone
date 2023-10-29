@@ -1,5 +1,12 @@
+import AccountNav from "./AccountNav";
+
 const Bookings = () => {
-  return <div>Bookings</div>;
+  return (
+    <>
+      <AccountNav />
+      My Bookings
+    </>
+  );
 };
 
 export default Bookings;

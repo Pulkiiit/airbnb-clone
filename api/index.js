@@ -26,8 +26,8 @@ app.use(
 );
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
-app.use(express.json());
 const photoMiddleware = multer({ dest: "uploads" });
+app.use(express.json());
 
 //database
 mongoose
@@ -35,9 +35,6 @@ mongoose
   .then(console.log("Databse connected"));
 
 //routes
-app.get("/test", (req, res) => {
-  res.json("ok");
-});
 
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
@@ -139,6 +136,7 @@ app.post("/places", (req, res) => {
       checkIn,
       checkOut,
       maxGuests,
+      price,
     } = req.body;
     const newAddedPhotos = addedPhotos.map(photo => photo.name);
     const place = Place.create({
@@ -152,12 +150,13 @@ app.post("/places", (req, res) => {
       checkIn,
       checkOut,
       maxGuests,
+      price,
     });
     res.json(place);
   });
 });
 
-app.get("/places", async (req, res) => {
+app.get("/user-places", async (req, res) => {
   jwt.verify(req.cookies.token, jwtSecret, {}, async (err, user) => {
     const { id } = user;
     res.json(await Place.find({ owner: id }));
@@ -186,7 +185,9 @@ app.put("/place/:id", async (req, res) => {
         checkIn,
         checkOut,
         maxGuests,
+        price,
       } = req.body;
+      console.log(price);
       place.set({
         title,
         address,
@@ -197,9 +198,16 @@ app.put("/place/:id", async (req, res) => {
         checkIn,
         checkOut,
         maxGuests,
+        price,
       });
       await place.save();
       res.json("ok");
     }
   });
 });
+
+app.get("/places", async (req, res) => {
+  res.json(await Place.find());
+});
+
+app.use("/book", require("./routes/payment"));

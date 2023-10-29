@@ -26,6 +26,7 @@ const AccomodationsForm = () => {
       dispatch(placeActions.setCheckIn(data.checkIn));
       dispatch(placeActions.setCheckOut(data.checkOut));
       dispatch(placeActions.setMaxGuests(data.maxGuests));
+      dispatch(placeActions.setPrice(data.price));
     });
   }, [id, dispatch]);
   const addPhotoByLink = async e => {
@@ -33,7 +34,7 @@ const AccomodationsForm = () => {
     const { data: fileName } = await axios.post("/upload-link", {
       link: place.photoLink,
     });
-    dispatch(placeActions.setAddedPhotos(fileName));
+    dispatch(placeActions.setAddedPhotos(fileName.name));
     dispatch(placeActions.setPhotoLink(""));
   };
 
@@ -143,7 +144,7 @@ const AccomodationsForm = () => {
                   <button
                     onClick={e => {
                       e.preventDefault();
-                      dispatch(placeActions.removeAddedPhotos(link.name));
+                      dispatch(placeActions.removeAddedPhotos(link));
                     }}
                     className='absolute bg-transparent m-1'
                   >
@@ -193,6 +194,8 @@ const AccomodationsForm = () => {
           <div>
             <h2 className='text-2xl mt-3'>Description</h2>
             <textarea
+              rows='4'
+              cols='50'
               value={place.description}
               onChange={e => {
                 dispatch(placeActions.setDescription(e.target.value));
@@ -406,7 +409,7 @@ const AccomodationsForm = () => {
             }}
           />
           <h2 className='text-2xl mt-3'>Check in and out time</h2>
-          <div className='grid gap-2 sm:grid-cols-3 '>
+          <div className='grid gap-2 sm:grid-cols-2 md:grid-cols-4 '>
             <div>
               <h3 className='mt-2 -mb-1'>Check in time</h3>
               <input
@@ -437,6 +440,16 @@ const AccomodationsForm = () => {
                 value={place.maxGuests}
                 onChange={e => {
                   dispatch(placeActions.setMaxGuests(e.target.value));
+                }}
+              />
+            </div>
+            <div>
+              <h3 className='mt-2 -mb-1'>Price per night</h3>
+              <input
+                type='number'
+                value={place.price}
+                onChange={e => {
+                  dispatch(placeActions.setPrice(e.target.value));
                 }}
               />
             </div>
