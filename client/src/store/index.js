@@ -18,7 +18,7 @@ const userSlice = createSlice({
 
 const clientSlice = createSlice({
   name: "client",
-  initialState: { value: null },
+  initialState: { value: {} },
   reducers: {
     setClient(state, action) {
       state.value = action.payload;

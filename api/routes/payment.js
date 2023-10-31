@@ -43,9 +43,6 @@ router.post("/success", async (req, res) => {
       razorpayPaymentId,
       razorpayOrderId,
       razorpaySignature,
-      client,
-      place,
-      guests,
     } = req.body;
 
     const shasum = crypto.createHmac("sha256", "w2lBtgmeuDUfnJVp43UpcaiT");
@@ -56,8 +53,6 @@ router.post("/success", async (req, res) => {
     if (digest !== razorpaySignature)
       return res.status(400).json({ msg: "Transaction not legit!" });
 
-    //create booking model
-    const createdBooking = await Booking.create({ place, client, guests });
     res.json({
       msg: "success",
       orderId: razorpayOrderId,

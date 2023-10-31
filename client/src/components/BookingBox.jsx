@@ -2,14 +2,14 @@
 import axios from "axios";
 import logo from "../assets/logo.png";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const BookingBox = ({ place, id, maxGuests }) => {
-  const client = useSelector(state => state.client.value);
   const [disable, setdisable] = useState(true);
   const guests = useRef(null);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [days, setDays] = useState(0);
+  const navigate = useNavigate();
 
   const calculateDays = () => {
     const start = new Date(from);
@@ -25,6 +25,15 @@ const BookingBox = ({ place, id, maxGuests }) => {
   useEffect(() => {
     setDays(calculateDays());
   }, [from, to]);
+
+  const bookingHandler = async () => {
+    await axios.post("/booking-update", {
+      place: place.id,
+      client: id,
+      guests,
+    });
+    navigate("/account/bookings");
+  };
 
   const guestHandler = () => {
     if (!guests.current.value) {
@@ -88,9 +97,6 @@ const BookingBox = ({ place, id, maxGuests }) => {
           razorpayPaymentId: response.razorpay_payment_id,
           razorpayOrderId: response.razorpay_order_id,
           razorpaySignature: response.razorpay_signature,
-          client: client._id,
-          place: id,
-          guests: guests,
         };
 
         const result = await axios.post(
@@ -149,7 +155,10 @@ const BookingBox = ({ place, id, maxGuests }) => {
       </div>
       <button
         disabled={disable}
-        onClick={displayRazorpay}
+        onClick={() => {
+          displayRazorpay();
+          bookingHandler();
+        }}
         className='bg-primary w-full rounded-full px-2 py-2 text-white mt-4 disabled:bg-gray-500'
       >
         Book this place

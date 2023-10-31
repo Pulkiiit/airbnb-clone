@@ -10,6 +10,7 @@ const imageDownloader = require("image-downloader");
 require("dotenv").config();
 const User = require("./models/User");
 const Place = require("./models/Place");
+const Booking = require("./models/Booking");
 const cookieParser = require("cookie-parser");
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret =
@@ -165,7 +166,9 @@ app.get("/user-places", async (req, res) => {
 
 app.get("/places/:id", async (req, res) => {
   const { id } = req.params;
-  res.json(await Place.findById(id));
+  const { client } = await Booking.find({ place: id });
+  const place = await Place.findById(id);
+  res.json({ place, client });
 });
 
 app.put("/place/:id", async (req, res) => {
@@ -211,3 +214,21 @@ app.get("/places", async (req, res) => {
 });
 
 app.use("/book", require("./routes/payment"));
+
+app.use("/bookings", async (req, res) => {
+  jwt.verify(req.cookies.token, jwtSecret, {}, async (err, user) => {
+    const { id } = user;
+    const { place } = await Booking.find({ client: id })
+      .populate("place")
+      .exec();
+    res.json({ place });
+  });
+});
+
+app.post("/booking-update", async (req, res) => {
+  const booking = await Booking.create({
+    place: req.body.place,
+    client: req.body.client,
+    guests: req.body.guests,
+  });
+});

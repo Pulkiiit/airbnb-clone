@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 const Header = () => {
   const client = useSelector(state => state.client.value);
   return (
-    <header className='flex justify-between'>
+    <header className=' flex justify-between '>
       <Link to={"/"} className='flex items-center gap-1'>
         <svg
           xmlns='http://www.w3.org/2000/svg'

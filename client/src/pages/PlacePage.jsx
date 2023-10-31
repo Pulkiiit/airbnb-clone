@@ -8,17 +8,22 @@ const PlacePage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [showPhotos, setShowPhotos] = useState(false);
+  const [bookingBox, setBookingBox] = useState(true);
   const place = useSelector(state => state.places.data);
   const maxGuests = place.maxGuests;
+  const { _id } = useSelector(state => state.client.value);
   useEffect(() => {
     if (!id) {
       return;
     }
     axios.get(`/places/${id}`).then(res => {
-      dispatch(placesActions.setPlaces(res.data));
-      console.log(place.photos);
+      dispatch(placesActions.setPlaces(res.data.place));
+      if (_id === res.data.client && id === res.data.place) {
+        console.log(_id, res.data.client, "  ", id, res.data.place);
+        setBookingBox(false);
+      }
     });
-  }, [id]);
+  }, [id, _id]);
 
   if (showPhotos) {
     return (
@@ -158,7 +163,9 @@ const PlacePage = () => {
             Max guests: {maxGuests}
           </div>
           <div>
-            <BookingBox place={place} id={id} maxGuests={maxGuests} />
+            {bookingBox && (
+              <BookingBox place={place} id={id} maxGuests={maxGuests} />
+            )}
           </div>
         </div>
         <div className='bg-white -mx-8 px-8 py-8 border-t'>

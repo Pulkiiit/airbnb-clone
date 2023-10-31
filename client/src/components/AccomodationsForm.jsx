@@ -16,17 +16,17 @@ const AccomodationsForm = () => {
       return;
     }
     axios.get("/places/" + id).then(res => {
-      const { data } = res;
-      dispatch(placeActions.setTitle(data.title));
-      dispatch(placeActions.setAddress(data.address));
-      dispatch(placeActions.setAddedPhotos(data.photos));
-      dispatch(placeActions.setDescription(data.description));
-      dispatch(placeActions.setPerks(data.perks));
-      dispatch(placeActions.setExtraInfo(data.extraInfo));
-      dispatch(placeActions.setCheckIn(data.checkIn));
-      dispatch(placeActions.setCheckOut(data.checkOut));
-      dispatch(placeActions.setMaxGuests(data.maxGuests));
-      dispatch(placeActions.setPrice(data.price));
+      const { place } = res.data;
+      dispatch(placeActions.setTitle(place.title));
+      dispatch(placeActions.setAddress(place.address));
+      dispatch(placeActions.setAddedPhotos(place.photos));
+      dispatch(placeActions.setDescription(place.description));
+      dispatch(placeActions.setPerks(place.perks));
+      dispatch(placeActions.setExtraInfo(place.extraInfo));
+      dispatch(placeActions.setCheckIn(place.checkIn));
+      dispatch(placeActions.setCheckOut(place.checkOut));
+      dispatch(placeActions.setMaxGuests(place.maxGuests));
+      dispatch(placeActions.setPrice(place.price));
     });
   }, [id, dispatch]);
   const addPhotoByLink = async e => {
