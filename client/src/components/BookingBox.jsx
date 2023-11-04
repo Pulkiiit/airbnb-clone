@@ -27,9 +27,12 @@ const BookingBox = ({ place, id, maxGuests }) => {
 
   const bookingHandler = async () => {
     await axios.post("/booking-update", {
-      place: place.id,
+      place: place._id,
       client: id,
-      guests,
+      guests: guests.current.value,
+      days,
+      from,
+      to,
     });
     navigate("/account/bookings");
   };

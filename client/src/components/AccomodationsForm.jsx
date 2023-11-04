@@ -16,7 +16,8 @@ const AccomodationsForm = () => {
       return;
     }
     axios.get("/places/" + id).then(res => {
-      const { place } = res.data;
+      console.log(res.data);
+      const place = res.data;
       dispatch(placeActions.setTitle(place.title));
       dispatch(placeActions.setAddress(place.address));
       dispatch(placeActions.setAddedPhotos(place.photos));

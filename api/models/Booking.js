@@ -15,6 +15,18 @@ const BookingSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  from: {
+    type: String,
+    required: true,
+  },
+  to: {
+    type: String,
+    required: true,
+  },
+  days: {
+    type: Number,
+    required: true,
+  },
 });
 
 const BookingModel = mongoose.model("Booking", BookingSchema);

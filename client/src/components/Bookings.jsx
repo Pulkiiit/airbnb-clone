@@ -17,24 +17,28 @@ const Bookings = () => {
     <>
       <AccountNav />
       My Bookings
-      {places.length > 0 &&
-        places.map(place => (
+      {places !== undefined &&
+        places?.length > 0 &&
+        places?.map((place, index) => (
           <Link
-            to={"/place/" + place._id}
+            to={"/place/" + place?.place?._id}
             className='flex gap-4 mt-4 bg-gray-200 p-4 rounded-2xl cursor-pointer'
-            key={place._id}
+            key={index}
           >
             <div className='flex w-32 h-32 bg-gray-300  grow shrink-0'>
-              {place.photos.length > 0 && (
+              {place?.place?.photos?.length > 0 && (
                 <img
+                  loading='lazy'
                   className='object-cover'
-                  src={"http://localhost:4000/uploads/" + place.photos[0]}
+                  src={
+                    "http://localhost:4000/uploads/" + place?.place?.photos[0]
+                  }
                 />
               )}
             </div>
             <div className='shrink grow-0'>
-              <h2 className='text-xl '>{place.title}</h2>
-              <p className='text-sm mt-2'>{place.description}</p>
+              <h2 className='text-xl '>{place?.place?.title}</h2>
+              <p className='text-sm mt-2'>{place?.place?.description}</p>
             </div>
           </Link>
         ))}

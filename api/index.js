@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const easyinvoice = require("easyinvoice");
 const multer = require("multer");
 const imageDownloader = require("image-downloader");
 require("dotenv").config();
@@ -15,6 +16,15 @@ const cookieParser = require("cookie-parser");
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret =
   "nG8D#%-FpF+AK7b5b|tgy}B:UMzL/%&Y5>)?1c=@O 4,R!L!(?e8Lfvv`MNO#4Fs";
+const invoiceGenerator = data => {
+  easyinvoice.createInvoice(data, function (result) {
+    fs.writeFileSync(
+      __dirname + "/invoice/invoice_" + Date.now() + ".pdf",
+      result.pdf,
+      "base64"
+    );
+  });
+};
 
 app.listen(4000);
 
@@ -165,10 +175,11 @@ app.get("/user-places", async (req, res) => {
 });
 
 app.get("/places/:id", async (req, res) => {
-  const { id } = req.params;
-  const { client } = await Booking.find({ place: id });
-  const place = await Place.findById(id);
-  res.json({ place, client });
+  jwt.verify(req.cookies.token, jwtSecret, {}, async (err, user) => {
+    const { id } = user;
+    const { id: placeId } = req.params;
+    res.json(await Place.findById(placeId));
+  });
 });
 
 app.put("/place/:id", async (req, res) => {
@@ -190,7 +201,6 @@ app.put("/place/:id", async (req, res) => {
         maxGuests,
         price,
       } = req.body;
-      console.log(price);
       place.set({
         title,
         address,
@@ -213,15 +223,16 @@ app.get("/places", async (req, res) => {
   res.json(await Place.find());
 });
 
-app.use("/book", require("./routes/payment"));
+// app.use("/book", require("./routes/payment"));
 
 app.use("/bookings", async (req, res) => {
   jwt.verify(req.cookies.token, jwtSecret, {}, async (err, user) => {
-    const { id } = user;
-    const { place } = await Booking.find({ client: id })
+    var { id } = user;
+    id = new mongoose.Types.ObjectId(id);
+    const bookings = await Booking.find({ client: id })
       .populate("place")
-      .exec();
-    res.json({ place });
+      .select("place");
+    res.json(bookings);
   });
 });
 
@@ -230,5 +241,59 @@ app.post("/booking-update", async (req, res) => {
     place: req.body.place,
     client: req.body.client,
     guests: req.body.guests,
+    days: req.body.days,
+    from: req.body.from,
+    to: req.body.to,
+  });
+  //
+  const client = await User.findById(req.body.client);
+  const place = await Place.findById(req.body.place);
+  const data = {
+    client: {
+      company: client.name,
+    },
+    sender: {
+      company: "Airbnb",
+      address: "4th floor, statesman house, barakhamba road Connaught Place",
+      zip: "110001 IN",
+      city: "New Delhi",
+      country: "India",
+    },
+    information: {
+      number: new Date(),
+      date: new Date().toLocaleDateString("en-GB"),
+    },
+    products: [
+      {
+        quantity: req.body.guests,
+        description: place.title,
+        price: req.body.days * place.price,
+      },
+    ],
+    settings: {
+      currency: "INR",
+    },
+  };
+  invoiceGenerator(data);
+  res.send("ok");
+});
+
+app.use("/booking-check/:id", async (req, res) => {
+  jwt.verify(req.cookies.token, jwtSecret, {}, async (err, user) => {
+    let flag = 0;
+    const { id: placeId } = req.params;
+    const { id: clientId } = user;
+    const placeObjectId = new mongoose.Types.ObjectId(placeId);
+    const booking = await Booking.find({ place: placeObjectId }).populate(
+      "place"
+    );
+    if (booking[0]?.client.toString() === clientId.toString()) {
+      const { place, from, to, days } = booking[0];
+      flag = 1;
+      res.json({ place, flag, from, to, days });
+    } else {
+      const place = await Place.findById(placeId);
+      res.json({ place, flag });
+    }
   });
 });

@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import AccountNav from "./AccountNav";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { placesActions } from "../store/index";
+import BookingModal from "./BookingModal";
 const AccomodationsPage = () => {
   const dispatch = useDispatch();
   const places = useSelector(state => state.places.data);
+  const [showModal, setShowModal] = useState(false);
   useEffect(() => {
     const getPlaces = async () => {
       const { data } = await axios.get("/user-places");
@@ -21,6 +23,7 @@ const AccomodationsPage = () => {
   return (
     <div>
       <AccountNav />
+      {showModal && <BookingModal />}
       <div className='text-center'>
         <Link
           className='bg-primary text-white px-4 py-2 rounded-full '
@@ -30,7 +33,8 @@ const AccomodationsPage = () => {
         </Link>
       </div>
       <div className='mt-4 flex'>
-        {places.length > 0 &&
+        {places &&
+          places.length > 0 &&
           places.map(place => (
             <Link
               to={"/account/accomodations/" + place._id}
@@ -38,8 +42,9 @@ const AccomodationsPage = () => {
               key={place._id}
             >
               <div className='flex w-32 h-32 bg-gray-300  grow shrink-0'>
-                {place.photos.length > 0 && (
+                {place.photos && place.photos.length > 0 && (
                   <img
+                    loading='lazy'
                     className='object-cover'
                     src={"http://localhost:4000/uploads/" + place.photos[0]}
                   />
@@ -49,6 +54,15 @@ const AccomodationsPage = () => {
                 <h2 className='text-xl '>{place.title}</h2>
                 <p className='text-sm mt-2'>{place.description}</p>
               </div>
+              <button
+                onClick={e => {
+                  e.preventDefault();
+                  setShowModal(true);
+                }}
+                className=' rounded-2xl  bg-primary text-white h-10 px-2 py-2'
+              >
+                Bookings
+              </button>
             </Link>
           ))}
       </div>
