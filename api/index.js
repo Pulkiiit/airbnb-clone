@@ -297,3 +297,12 @@ app.use("/booking-check/:id", async (req, res) => {
     }
   });
 });
+
+app.use("/booking-list/:id", async (req, res) => {
+  const { id } = req.params;
+  const placeObjectId = new mongoose.Types.ObjectId(id);
+  const bookings = await Booking.find({ place: placeObjectId })
+    .populate("client")
+    .select("client guests from to days");
+  res.json(bookings);
+});

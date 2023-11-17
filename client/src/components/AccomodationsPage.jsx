@@ -8,22 +8,29 @@ import BookingModal from "./BookingModal";
 const AccomodationsPage = () => {
   const dispatch = useDispatch();
   const places = useSelector(state => state.places.data);
+  const [price, setPrice] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [placeId, setPlaceId] = useState(null);
   useEffect(() => {
     const getPlaces = async () => {
       const { data } = await axios.get("/user-places");
       dispatch(placesActions.setPlaces(data));
     };
     getPlaces();
+    setShowModal(false);
     return () => {
       dispatch(placesActions.removePlaces());
     };
   }, []);
 
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <div>
       <AccountNav />
-      {showModal && <BookingModal />}
+
       <div className='text-center'>
         <Link
           className='bg-primary text-white px-4 py-2 rounded-full '
@@ -57,6 +64,8 @@ const AccomodationsPage = () => {
               <button
                 onClick={e => {
                   e.preventDefault();
+                  setPlaceId(place._id);
+                  setPrice(place.price);
                   setShowModal(true);
                 }}
                 className=' rounded-2xl  bg-primary text-white h-10 px-2 py-2'
@@ -66,6 +75,9 @@ const AccomodationsPage = () => {
             </Link>
           ))}
       </div>
+      {showModal && (
+        <BookingModal closeModal={closeModal} place={placeId} price={price} />
+      )}
     </div>
   );
 };
