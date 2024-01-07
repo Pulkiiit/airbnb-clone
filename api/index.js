@@ -12,10 +12,12 @@ require("dotenv").config();
 const User = require("./models/User");
 const Place = require("./models/Place");
 const Booking = require("./models/Booking");
+const payment = require("./routes/payment");
 const cookieParser = require("cookie-parser");
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret =
   "nG8D#%-FpF+AK7b5b|tgy}B:UMzL/%&Y5>)?1c=@O 4,R!L!(?e8Lfvv`MNO#4Fs";
+
 const invoiceGenerator = data => {
   easyinvoice.createInvoice(data, function (result) {
     fs.writeFileSync(
@@ -306,3 +308,7 @@ app.use("/booking-list/:id", async (req, res) => {
     .select("client guests from to days");
   res.json(bookings);
 });
+
+//PAYMENT
+
+app.use("/payment", payment);
